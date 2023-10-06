@@ -1,37 +1,29 @@
 
 use std::{process::{Command}, time::Duration, thread::sleep, sync::{Mutex, Arc}};
-
-
 use interactive_process::InteractiveProcess;
 
-pub static AGDA: &'static str = env!("DETERMI_NIX_AGDA_PATH");
+
+////////////////////////////////////////////////////////////
+// State
+
+
+////////////////////////////
+// Process
+
+
+////////////////////////////
+// Command
+
+
+
+
+////////////////////////////////////////////////////////////
+// Using state
+
 
 pub fn load_name_in_file(name: &str, file: &str)
 {
 
-    let load_result = Some(String::new());
-    let load_result_mtx = Arc::new(Mutex::new(load_result));
-    let read_result_mtx = load_result_mtx.clone();
-
-
-    // Use Rust's built-in `std::process` to construct a `Command`.
-    // `examples/echo_stream.py` repeats back lines sent to it,
-    // prefixed with "echo: ".
-    // let cmd = Command::new("examples/echo_stream.py");
-
-    // Pass this command to `InteractiveProcess`, along with a
-    // callback. In this case, we'll print every line that the
-    // process prints to `stdout`, prefixed by "Got: ".
-    let mut proc = InteractiveProcess::new(
-        Command::new(AGDA).arg("--interaction"),
-        move |line|
-        {
-            let res = line.unwrap();
-            println!("Got: {}", res.clone());
-            let mut str = load_result_mtx.lock().unwrap();
-            *str = Some(res);
-        }
-    ).unwrap();
 
     // Send some data, waiting in between.
     // The result of this is "Got: echo: data1" being printed by our callback,
@@ -58,15 +50,11 @@ pub fn load_name_in_file(name: &str, file: &str)
     // the `InteractiveProcess` and kill it ourselves.
     proc.close().kill().unwrap();
 
-    let res = read_result_mtx.lock().unwrap();
+    let res = read_result_mutex.lock().unwrap();
 
     println!("other output was: {res:?}");
 }
 
 
-fn agda_load_command(name: &str, file: &str) -> String
-{
-    format!("IOTCM \"{file}\" NonInteractive Indirect ( Cmd_compute_toplevel DefaultCompute \"{name}\" )\n")
-}
 
 

@@ -8,3 +8,4 @@ edition = "2021"
 [dependencies]
 interactive_process = "*"
 os_pipe = "1.1.4"
+regex = "*"
