@@ -12,13 +12,6 @@ fn main() {
     let x = agda_interaction::AGDA;
     println!("agda: {x}");
 
-
-    // let out = Command::new(x).output().expect("could not run");
-
-    // let res = std::str::from_utf8(&out.stdout).unwrap();
-
-    // println!("result: \n{}", res);
-
     load_name_in_file("main", "./data/Test.agda");
 }
 

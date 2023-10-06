@@ -63,6 +63,7 @@ pub fn load_name_in_file(name: &str, file: &str)
     println!("other output was: {res:?}");
 }
 
+
 fn agda_load_command(name: &str, file: &str) -> String
 {
     format!("IOTCM \"{file}\" NonInteractive Indirect ( Cmd_compute_toplevel DefaultCompute \"{name}\" )\n")
