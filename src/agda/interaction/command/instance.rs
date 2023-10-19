@@ -31,9 +31,11 @@ impl IAgdaCommand for AgdaCommandLoad
         if let Some(capture) = self.regex.captures(line)
         {
             let ex = capture.extract();
-            println!("extracted is: {:?}", ex);
             let (_, [value]) = ex;
-            self.result = Some(value.to_owned());
+            println!("val: {:?}", value);
+            let string = unescape(value).unwrap();
+            println!("res: {:?}", string);
+            self.result = Some(string);
             Some(())
         }
         else
@@ -42,6 +44,11 @@ impl IAgdaCommand for AgdaCommandLoad
         }
     }
 }
+
+fn unescape(s: &str) -> serde_json::Result<String> {
+    serde_json::from_str(&format!("\"{}\"", s))
+}
+
 
 
 

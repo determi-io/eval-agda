@@ -4,11 +4,14 @@ open import Agda.Builtin.String
 
 data XY : Set where
   a : XY
+  zy : XY -> XY -> XY
   b : XY
 
 
-main : String
-main = primStringAppend "bla" "<=> bla bla"
+main : XY
+main = zy a b
+
+-- primStringAppend "bla" "<=>\n bla bla"
 
 
 

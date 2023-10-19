@@ -13,14 +13,17 @@ fn main() {
     // load_name_in_file("main", "./data/Test.agda");
     let mut interaction = AgdaInteraction::new();
     let mut cmd = AgdaCommandLoad::new("main", "./data/Test.agda");
-    if let Some(()) = interaction.run_command(&mut cmd)
+    match interaction.run_command(&mut cmd)
     {
-        println!("success!");
-        println!("{:?}", cmd.result)
-    }
-    else
-    {
-        println!("error!");
+        Ok(()) =>
+        {
+            println!("success!");
+            println!("{}", cmd.result.unwrap())
+        },
+        Err(e) =>
+        {
+            println!("error! {e}");
+        }
     }
 }
 

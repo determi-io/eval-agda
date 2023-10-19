@@ -4,6 +4,7 @@ pub mod command;
 use std::{process::{Command}, time::Duration, thread::sleep, sync::{Mutex, Arc}};
 use std::mem::ManuallyDrop;
 use interactive_process::InteractiveProcess;
+use anyhow::{Result, anyhow};
 
 use super::AGDA;
 use command::AgdaCommand;
@@ -39,7 +40,6 @@ impl AgdaInteraction
             move |line|
             {
                 let res = line.unwrap();
-                println!("Got: {}", res.clone());
                 let mut str = load_result_mutex.lock().unwrap();
                 str.push(res);
             }
@@ -48,7 +48,7 @@ impl AgdaInteraction
         AgdaInteraction { process, result_mutex }
     }
 
-    pub fn run_command(&mut self, cmd: &mut AgdaCommand) -> Option<()>
+    pub fn run_command(&mut self, cmd: &mut AgdaCommand) -> Result<()>
     {
         // reset mutex to be empty
         *(self.result_mutex.lock().unwrap()) = Vec::new();
@@ -59,7 +59,6 @@ impl AgdaInteraction
         // we wait for at most 30s for command to return
         for i in 0..60
         {
-            println!("===== ITER {i} ====");
             sleep(Duration::from_millis(500));
 
             // check whether one of the output lines matches our pattern
@@ -70,12 +69,8 @@ impl AgdaInteraction
                 // (the parse call will have changed the cmd object to contain the result)
                 match cmd.parse(&line)
                 {
-                    Some(()) =>
-                    {
-                        println!("{line} matched!");
-                        return Some(())
-                    },
-                    None => println!("{line} didnt match"),
+                    Some(()) => return Ok(()),
+                    None => (),
                 }
             }
 
@@ -84,7 +79,7 @@ impl AgdaInteraction
             *result_lock = Vec::new()
         }
 
-        None
+        Err(anyhow!("Couldn't successfully parse agda's output"))
     }
 }
 
